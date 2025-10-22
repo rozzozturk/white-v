@@ -2175,6 +2175,25 @@ class KeepnetAssistant {
       // Global fonksiyonları tanımla (summary ekranı için)
       this.setupGlobalFunctions()
       
+      // ✅ YENİ: "Git ve Düzelt" modunu kontrol et
+      const fixingStep = await Storage.get('keepnet_fixing_step')
+      if (fixingStep) {
+        console.log("[Keepnet] 🔧 Fixing mode detected! Going to step:", fixingStep)
+        
+        // Fixing flag'ini temizle
+        await Storage.set('keepnet_fixing_step', null)
+        
+        // Footer'ı göster
+        const footer = document.getElementById('keepnet-panel-footer')
+        if (footer) {
+          footer.style.display = 'flex'
+        }
+        
+        // Direkt adıma git
+        await this.executeStep(fixingStep)
+        return
+      }
+      
       // Start first step (navigation step ise 2. adımdan başla)
       const firstStep = this.currentWorkflow[this.currentStep - 1]
       if (firstStep && firstStep.isNavigation && this.currentStep === 1) {
@@ -2321,45 +2340,94 @@ class KeepnetAssistant {
       }
     }
     
-    // Global function - Git ve Düzelt için
-    window.keepnetGoToStep = async (stepId) => {
-      console.log(`[Keepnet] Git ve Düzelt clicked for step ${stepId}`)
+    // ✅ YENİ: Akıllı "Git ve Düzelt" sistemi
+    window.keepnetGoToStep = async (stepId, workflowName) => {
+      console.log(`[Keepnet] Git ve Düzelt: Step ${stepId}, Workflow: ${workflowName}`)
       
-      // Adıma göre doğru URL'yi belirle
-      const urlMap = {
-        1: 'https://security.microsoft.com/homepage',
-        2: 'https://security.microsoft.com/homepage',
-        3: 'https://security.microsoft.com/securitypoliciesandrules',
-        4: 'https://security.microsoft.com/threatpolicy',
-        5: 'https://security.microsoft.com/advanceddelivery',
-        6: 'https://security.microsoft.com/advanceddelivery?viewid=PhishingSimulation',
-        7: 'https://security.microsoft.com/advanceddelivery?viewid=PhishingSimulation',
-        8: 'https://security.microsoft.com/advanceddelivery?viewid=PhishingSimulation',
-        9: 'https://security.microsoft.com/advanceddelivery?viewid=PhishingSimulation',
-        10: 'https://security.microsoft.com/advanceddelivery?viewid=PhishingSimulation',
-        11: 'https://security.microsoft.com/advanceddelivery?viewid=PhishingSimulation'
+      // Hangi workflow'dayız?
+      const targetWorkflow = workflowName || assistant.workflowName
+      
+      // Workflow'a göre steps array'ini al
+      let stepsArray = null
+      let baseUrl = ''
+      
+      switch (targetWorkflow) {
+        case 'WORKFLOW_1':
+          stepsArray = WORKFLOW_STEPS
+          baseUrl = 'https://security.microsoft.com'
+          break
+        case 'WORKFLOW_2':
+          stepsArray = THREAT_POLICIES_STEPS
+          baseUrl = 'https://security.microsoft.com/antispam'
+          break
+        case 'WORKFLOW_3':
+          stepsArray = SAFE_LINKS_STEPS
+          baseUrl = 'https://security.microsoft.com/threatpolicy'
+          break
+        case 'WORKFLOW_4':
+          stepsArray = SPAM_FILTER_BYPASS_STEPS
+          baseUrl = 'https://admin.exchange.microsoft.com/#/transportrules'
+          break
+        case 'WORKFLOW_5':
+          stepsArray = ATP_LINK_BYPASS_STEPS
+          baseUrl = 'https://admin.exchange.microsoft.com/#/transportrules'
+          break
+        case 'WORKFLOW_6':
+          stepsArray = ATP_ATTACHMENT_BYPASS_STEPS
+          baseUrl = 'https://admin.exchange.microsoft.com/#/transportrules'
+          break
       }
       
-      const targetUrl = urlMap[stepId]
-      if (targetUrl) {
-        const currentUrl = window.location.href
-        // Farklı sayfadaysak, önce doğru sayfaya git
-        if (!currentUrl.startsWith(targetUrl.split('?')[0])) {
-          console.log(`[Keepnet] Git ve Düzelt: Navigating to ${targetUrl}`)
-          
-          // "Git ve Düzelt" modunu işaretle
-          await Storage.set('keepnet_fixing_step', true)
-          // Step'i kaydet
-          await Storage.set(STORAGE_KEYS.CURRENT_STEP, stepId)
-          
-          // Sayfayı değiştir
-          window.location.href = targetUrl
-          return
+      if (!stepsArray) {
+        console.error("[Keepnet] Unknown workflow:", targetWorkflow)
+        alert('Bilinmeyen workflow!')
+        return
+      }
+      
+      // Target step'i bul
+      const targetStep = stepsArray[stepId - 1]
+      if (!targetStep) {
+        console.error("[Keepnet] Step not found:", stepId)
+        alert('Adım bulunamadı!')
+        return
+      }
+      
+      // Step'in navigate URL'i var mı?
+      const targetUrl = targetStep.navigate || baseUrl
+      const currentUrl = window.location.href
+      
+      console.log(`[Keepnet] Target URL: ${targetUrl}`)
+      console.log(`[Keepnet] Current URL: ${currentUrl}`)
+      
+      // Workflow değiştiriyorsak, önce workflow'u kaydet
+      if (targetWorkflow !== assistant.workflowName) {
+        console.log(`[Keepnet] Switching from ${assistant.workflowName} to ${targetWorkflow}`)
+        await Storage.set('keepnet_next_workflow', targetWorkflow)
+        await Storage.set('keepnet_fixing_step', stepId)
+      } else {
+        // Aynı workflow içinde adım değiştirme
+        await Storage.set('keepnet_fixing_step', stepId)
+      }
+      
+      // Step'i kaydet
+      await Storage.set(STORAGE_KEYS.CURRENT_STEP, stepId)
+      
+      // Farklı sayfadaysak yönlendir
+      if (!currentUrl.startsWith(targetUrl.split('?')[0].split('#')[0])) {
+        console.log(`[Keepnet] Git ve Düzelt: Navigating to ${targetUrl}`)
+        window.location.href = targetUrl
+      } else {
+        // Aynı sayfadaysak direkt adıma geç
+        console.log(`[Keepnet] Git ve Düzelt: Same page, executing step ${stepId}`)
+        
+        // Workflow değiştiyse güncelle
+        if (targetWorkflow !== assistant.workflowName) {
+          assistant.currentWorkflow = stepsArray
+          assistant.workflowName = targetWorkflow
         }
+        
+        await assistant.executeStep(stepId)
       }
-      
-      // Aynı sayfadayız, direkt adıma geç
-      assistant.executeStep(stepId)
     }
     
     console.log("[Keepnet] Global functions registered")
@@ -3009,15 +3077,19 @@ class KeepnetAssistant {
             ${screenshot ? `<div style="font-size: 11px; color: #6b7280;">Screenshot: ${step.name}.png</div>` : ''}
           </div>
           ${!result?.valid ? `
-            <button class="keepnet-goto-step-btn" data-step-id="${step.id}" style="
-              padding: 4px 8px;
-              font-size: 11px;
-              background: #667eea;
-              color: white;
-              border: none;
-              border-radius: 4px;
-              cursor: pointer;
-            ">Git ve Düzelt</button>
+            <button 
+              class="keepnet-goto-step-btn" 
+              data-step-id="${step.id}" 
+              data-workflow="${this.workflowName}"
+              style="
+                padding: 4px 8px;
+                font-size: 11px;
+                background: #667eea;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+              ">Git ve Düzelt</button>
           ` : ''}
         </div>
       `
@@ -3171,20 +3243,35 @@ class KeepnetAssistant {
         console.log("[Keepnet] Click handler and hover effects attached successfully")
       }
       
-      // Git ve Düzelt butonları için
+      // ✅ YENİ: Git ve Düzelt butonları için workflow bilgisiyle
       const gotoButtons = document.querySelectorAll('.keepnet-goto-step-btn')
       gotoButtons.forEach(btn => {
         btn.addEventListener('click', async (e) => {
           e.preventDefault()
           e.stopPropagation()
+          
           const stepId = parseInt(btn.getAttribute('data-step-id'))
-          console.log("[Keepnet] Git ve Düzelt clicked for step:", stepId)
+          const workflowName = btn.getAttribute('data-workflow')
+          
+          console.log(`[Keepnet] Git ve Düzelt clicked: Step ${stepId}, Workflow: ${workflowName}`)
           
           if (typeof window.keepnetGoToStep === 'function') {
-            await window.keepnetGoToStep(stepId)
+            await window.keepnetGoToStep(stepId, workflowName)
           } else {
             console.error("[Keepnet] window.keepnetGoToStep is not a function!")
+            alert("Hata: Fonksiyon bulunamadı. Lütfen extension'ı yeniden yükleyin.")
           }
+        })
+        
+        // Hover effect
+        btn.addEventListener('mouseenter', () => {
+          btn.style.background = '#5b21b6'
+          btn.style.transform = 'scale(1.05)'
+        })
+        
+        btn.addEventListener('mouseleave', () => {
+          btn.style.background = '#667eea'
+          btn.style.transform = 'scale(1)'
         })
       })
       console.log("[Keepnet] Git ve Düzelt handlers attached:", gotoButtons.length)
@@ -3254,17 +3341,15 @@ console.log("[Keepnet] Current URL:", location.href)
 window.addEventListener('load', async () => {
   console.log("[Keepnet] Page loaded, checking for active session...")
   
-  // Workflow geçiş modu kontrolü (yeni workflow başlatılacak mı?)
-  const nextWorkflow = await Storage.get('keepnet_next_workflow')
-  if (nextWorkflow) {
-    console.log("[Keepnet] 🚀 New workflow detected:", nextWorkflow)
+  // ✅ ÖNCE: "Git ve Düzelt" modunu kontrol et
+  const fixingStep = await Storage.get('keepnet_fixing_step')
+  if (fixingStep) {
+    console.log("[Keepnet] 🔧 Fixing mode detected on page load! Auto-starting assistant...")
     
-    // Flag'i temizle
-    await Storage.set('keepnet_next_workflow', null)
+    // NOT: Fixing flag'ini temizleme burada, init() içinde temizlenecek
     
-    // Kısa bekleme, sonra asistan başlat
+    // Asistan başlat
     setTimeout(async () => {
-      console.log("[Keepnet] Starting new workflow after page load...")
       chrome.runtime.sendMessage({ action: 'initAssistant' }, (response) => {
         console.log("[Keepnet] initAssistant response:", response)
         
@@ -3284,16 +3369,17 @@ window.addEventListener('load', async () => {
     return
   }
   
-  // "Git ve Düzelt" modu kontrolü
-  const fixing = await Storage.get('keepnet_fixing_step')
-  if (fixing) {
-    console.log("[Keepnet] 🔧 Fixing mode detected! Auto-starting assistant...")
+  // Workflow geçiş modu kontrolü
+  const nextWorkflow = await Storage.get('keepnet_next_workflow')
+  if (nextWorkflow) {
+    console.log("[Keepnet] 🚀 New workflow detected:", nextWorkflow)
     
-    // Fixing flag'ini temizle
-    await Storage.set('keepnet_fixing_step', null)
+    // Flag'i temizle
+    await Storage.set('keepnet_next_workflow', null)
     
-    // Asistan başlat
+    // Kısa bekleme, sonra asistan başlat
     setTimeout(async () => {
+      console.log("[Keepnet] Starting new workflow after page load...")
       chrome.runtime.sendMessage({ action: 'initAssistant' }, (response) => {
         console.log("[Keepnet] initAssistant response:", response)
         
