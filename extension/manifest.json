@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Keepnet Whitelist Assistant for Office 365",
+  "version": "3.1.0",
+  "description": "Office 365'te Keepnet phishing simülasyonları için otomatik white list yapılandırma asistanı - Akıllı navigasyon, gerçek zamanlı doğrulama ve kanıt toplama",
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://security.microsoft.com/*",
+    "https://admin.exchange.microsoft.com/*",
+    "https://admin.microsoft.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://security.microsoft.com/*",
+        "https://admin.exchange.microsoft.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_title": "Keepnet Whitelist Assistant - Click to Start"
+  },
+  "icons": {
+    "16": "icons/icon16.jpg",
+    "48": "icons/icon48.jpg",
+    "128": "icons/icon128.jpg"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["config.json", "steps.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
