@@ -2211,6 +2211,8 @@ class KeepnetAssistant {
         let nextWorkflow = null
         let nextWorkflowName = ''
         
+        console.log("[Keepnet] 🔍 Determining next workflow from:", assistant.workflowName)
+        
         if (assistant.workflowName === 'WORKFLOW_1') {
           console.log("[Keepnet] Starting WORKFLOW_2 (THREAT_POLICIES_STEPS)...")
           nextWorkflow = THREAT_POLICIES_STEPS
@@ -2231,6 +2233,7 @@ class KeepnetAssistant {
           console.log("[Keepnet] Starting WORKFLOW_6 (ATP_ATTACHMENT_BYPASS_STEPS)...")
           nextWorkflow = ATP_ATTACHMENT_BYPASS_STEPS
           nextWorkflowName = 'WORKFLOW_6'
+          console.log("[Keepnet] ✅ WORKFLOW_5 -> WORKFLOW_6 transition confirmed!")
         } else if(assistant.workflowName === 'WORKFLOW_6'){
           console.log("[Keepnet] No more workflows!")
           assistant.panel?.showSuccess('✅ Tüm workflow\'lar tamamlandı!')
@@ -3082,6 +3085,8 @@ class KeepnetAssistant {
     let nextWorkflowText = ''
     let hasNextWorkflow = false
     
+    console.log("[Keepnet] 🔍 Summary step - Current workflowName:", this.workflowName)
+    
     if (this.workflowName === 'WORKFLOW_1') {
       nextWorkflowText = 'Devam Et (Workflow 2: Anti-Spam)'
       hasNextWorkflow = true
@@ -3097,6 +3102,7 @@ class KeepnetAssistant {
     } else if (this.workflowName === 'WORKFLOW_5') {
       nextWorkflowText = 'Devam Et (Workflow 6: ATP Attachment Bypass)'
       hasNextWorkflow = true
+      console.log("[Keepnet] ✅ WORKFLOW_5 summary - hasNextWorkflow:", hasNextWorkflow, "nextWorkflowText:", nextWorkflowText)
     } else if (this.workflowName === 'WORKFLOW_6') {
       nextWorkflowText = '🎊 Tebrikler! Tüm Workflow\'lar Tamamlandı'
       hasNextWorkflow = false
