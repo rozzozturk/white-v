@@ -2203,40 +2203,71 @@ class KeepnetAssistant {
     // Global function - Sonraki workflow'a git
     window.keepnetContinueWorkflow = async () => {
       console.log("[Keepnet] keepnetContinueWorkflow() called!")
-      console.log("[Keepnet] Continuing to next workflow...")
       console.log("[Keepnet] Current workflow:", assistant.workflowName)
       
       try {
-        // Hangi workflow'a geçeceğiz?
         let nextWorkflow = null
         let nextWorkflowName = ''
         
         console.log("[Keepnet] 🔍 Determining next workflow from:", assistant.workflowName)
         
+        // ✅ DOĞRU SIRALAMA
         if (assistant.workflowName === 'WORKFLOW_1') {
-          console.log("[Keepnet] Starting WORKFLOW_2 (THREAT_POLICIES_STEPS)...")
+          console.log("[Keepnet] Starting WORKFLOW_2...")
           nextWorkflow = THREAT_POLICIES_STEPS
           nextWorkflowName = 'WORKFLOW_2'
+          
         } else if (assistant.workflowName === 'WORKFLOW_2') {
-          console.log("[Keepnet] Starting WORKFLOW_3 (SAFE_LINKS_STEPS)...")
+          console.log("[Keepnet] Starting WORKFLOW_3...")
           nextWorkflow = SAFE_LINKS_STEPS
           nextWorkflowName = 'WORKFLOW_3'
+          
         } else if (assistant.workflowName === 'WORKFLOW_3') {
-          console.log("[Keepnet] Starting WORKFLOW_4 (SPAM_FILTER_BYPASS_STEPS)...")
+          console.log("[Keepnet] Starting WORKFLOW_4...")
           nextWorkflow = SPAM_FILTER_BYPASS_STEPS
           nextWorkflowName = 'WORKFLOW_4'
+          
         } else if (assistant.workflowName === 'WORKFLOW_4') {
-          console.log("[Keepnet] Starting WORKFLOW_5 (ATP_LINK_BYPASS_STEPS)...")
+          console.log("[Keepnet] Starting WORKFLOW_5...")
           nextWorkflow = ATP_LINK_BYPASS_STEPS
           nextWorkflowName = 'WORKFLOW_5'
+          
         } else if (assistant.workflowName === 'WORKFLOW_5') {
-          console.log("[Keepnet] Starting WORKFLOW_6 (ATP_ATTACHMENT_BYPASS_STEPS)...")
+          // 🎯 WORKFLOW_5 -> WORKFLOW_6 AYNI SAYFADA!
+          console.log("[Keepnet] Starting WORKFLOW_6 on SAME PAGE...")
           nextWorkflow = ATP_ATTACHMENT_BYPASS_STEPS
           nextWorkflowName = 'WORKFLOW_6'
-          console.log("[Keepnet] ✅ WORKFLOW_5 -> WORKFLOW_6 transition confirmed!")
-        } else if(assistant.workflowName === 'WORKFLOW_6'){
-          console.log("[Keepnet] No more workflows!")
+          
+          // ⚡ ÖNEMLI: Aynı sayfada workflow değiştir!
+          assistant.currentWorkflow = nextWorkflow
+          assistant.workflowName = nextWorkflowName
+          assistant.currentStep = 0
+          assistant.stepResults = {}
+          
+          await Storage.set(STORAGE_KEYS.CURRENT_STEP, 0)
+          await Storage.set(STORAGE_KEYS.STEP_RESULTS, {})
+          await Storage.set('keepnet_next_workflow', null)
+          
+          // Footer'ı göster
+          const footer = document.getElementById('keepnet-panel-footer')
+          if (footer) {
+            footer.style.display = 'flex'
+          }
+          
+          console.log("[Keepnet] 🚀 Starting WORKFLOW_6 Step 1...")
+          await assistant.executeStep(1)
+          console.log("[Keepnet] ✅ WORKFLOW_6 started!")
+          return // 🛑 Burada return et, sayfa değiştirme!
+          
+        } else if (assistant.workflowName === 'WORKFLOW_6') {
+          console.log("[Keepnet] 🎉 All workflows completed!")
           assistant.panel?.showSuccess('✅ Tüm workflow\'lar tamamlandı!')
+          return
+        }
+        
+        // ❌ WORKFLOW_5 değilse, diğer workflow'lar için normal akış
+        if (!nextWorkflow) {
+          console.error("[Keepnet] No next workflow found!")
           return
         }
         
@@ -2247,97 +2278,43 @@ class KeepnetAssistant {
         // Yeni workflow'u storage'a kaydet
         await Storage.set('keepnet_next_workflow', nextWorkflowName)
         
-        // İlk adımın navigation adımı olup olmadığını kontrol et
+        // İlk adım navigation mı?
         const firstStep = nextWorkflow[0]
         
         if (firstStep.isNavigation && firstStep.navigate) {
-          // Navigation adımı varsa direkt sayfaya git
           console.log("[Keepnet] First step is navigation, going to:", firstStep.navigate)
           
-          // Adım 1'i kaydet (sayfa yüklendiğinde devam etmek için)
           await Storage.set(STORAGE_KEYS.CURRENT_STEP, 1)
           
-          // Şu anki URL ile karşılaştır
           const currentUrl = window.location.href
           const targetUrl = firstStep.navigate
           
           console.log("[Keepnet] Current URL:", currentUrl)
           console.log("[Keepnet] Target URL:", targetUrl)
           
-          // WORKFLOW_5'ten WORKFLOW_6'ya geçerken reload yapma!
-          if (nextWorkflowName === 'WORKFLOW_6' && currentUrl.includes('admin.exchange.microsoft.com')) {
-            console.log("[Keepnet] 🚀 WORKFLOW_6 - Same page transition, no reload needed!")
-            // Aynı sayfada devam et, reload yapma
-            assistant.currentWorkflow = nextWorkflow
-            assistant.workflowName = nextWorkflowName
-            assistant.currentStep = 0
-            await Storage.set(STORAGE_KEYS.CURRENT_STEP, 0)
-            
-            // Footer'ı tekrar göster
-            const footer = document.getElementById('keepnet-panel-footer')
-            if (footer) {
-              footer.style.display = 'flex'
-            }
-            
-            console.log("[Keepnet] 🚀 Starting WORKFLOW_6 on same page...")
-            await assistant.executeStep(1, nextWorkflow)
-            return
-          } else if (currentUrl.includes('admin.exchange.microsoft.com') && targetUrl.includes('admin.exchange.microsoft.com')) {
-            console.log("[Keepnet] ⚠️ Already on Exchange Admin, reloading page to start new workflow...")
-            window.location.reload()
-          } else {
-            // Farklı sayfaya git
-            console.log("[Keepnet] Navigating to:", targetUrl)
-            window.location.href = targetUrl
-          }
+          // Farklı sayfaya git
+          console.log("[Keepnet] Navigating to:", targetUrl)
+          window.location.href = targetUrl
+          
         } else {
-          // Navigation adımı yoksa - aynı sayfada devam et!
-          console.log("[Keepnet] No navigation step, starting workflow on same page...")
-          console.log("[Keepnet] Next workflow:", nextWorkflowName)
+          // Navigation yoksa aynı sayfada devam et
+          console.log("[Keepnet] No navigation step, starting on same page...")
           
-          // WORKFLOW_6 için özel mantık
-          if (nextWorkflowName === 'WORKFLOW_6') {
-            console.log("[Keepnet] 🎯 WORKFLOW_6 detected - special handling!")
-            
-            // Footer'ı tekrar göster
-            const footer = document.getElementById('keepnet-panel-footer')
-            if (footer) {
-              footer.style.display = 'flex'
-            }
-            
-            // Workflow ve state'i güncelle
-            assistant.currentWorkflow = nextWorkflow
-            assistant.workflowName = nextWorkflowName
-            assistant.currentStep = 0
-            await Storage.set(STORAGE_KEYS.CURRENT_STEP, 0)
-            
-            console.log("[Keepnet] 🚀 Starting WORKFLOW_6 on same page...")
-            
-            // Yeni workflow'u başlat
-            await assistant.executeStep(1, nextWorkflow)
-            console.log("[Keepnet] ✅ WORKFLOW_6 Step 1 executed successfully!")
-            return
-          }
-          
-          // Diğer workflow'lar için normal mantık
-          // Footer'ı tekrar göster
           const footer = document.getElementById('keepnet-panel-footer')
           if (footer) {
             footer.style.display = 'flex'
           }
           
-          // Workflow ve state'i güncelle
           assistant.currentWorkflow = nextWorkflow
           assistant.workflowName = nextWorkflowName
           assistant.currentStep = 0
           await Storage.set(STORAGE_KEYS.CURRENT_STEP, 0)
           
-          console.log("[Keepnet] 🚀 Starting", nextWorkflowName, "on same page...")
-          
-          // Yeni workflow'u başlat
-          await assistant.executeStep(1, nextWorkflow)
-          console.log("[Keepnet] ✅ Step 1 executed successfully!")
+          console.log("[Keepnet] 🚀 Starting", nextWorkflowName, "...")
+          await assistant.executeStep(1)
+          console.log("[Keepnet] ✅ Step 1 executed!")
         }
+        
       } catch (error) {
         console.error("[Keepnet] Error continuing workflow:", error)
         assistant.panel?.showError(`❌ Hata: ${error.message}`)
