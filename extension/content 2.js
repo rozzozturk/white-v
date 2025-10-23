@@ -168,7 +168,7 @@ const WORKFLOW_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 7,
+    id: 8,
     name: 'step8_domains_input',
     title: 'Etki Alanları',
     description: 'Etki alanlarını girin (örn: *.keepnetdomain.com)',
@@ -194,7 +194,7 @@ const WORKFLOW_STEPS = [
     waitAfterClick: 500
   },
   {
-    id: 8,
+    id: 9,
     name: 'step9_ip_input',
     title: 'IP Adresleri',
     description: 'White list IP adreslerini girin',
@@ -217,7 +217,7 @@ const WORKFLOW_STEPS = [
   },
 
   {
-    id: 9,
+    id: 10,
     name: 'step10_simulation_urls_input',
     title: 'Simülasyon URL\'leri',
     description: 'Simülasyon URL\'lerini girin',
@@ -243,7 +243,7 @@ const WORKFLOW_STEPS = [
     waitAfterClick: 500
   },
   {
-    id: 10,
+    id: 11,
     name: 'step11_save',
     title: 'Kaydet',
     description: 'Değişiklikleri kaydedin',
@@ -265,7 +265,7 @@ const WORKFLOW_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 11,
+    id: 12,
     name: 'step12_summary',
     title: 'Tamamlandı! ✅',
     description: 'Tüm adımlar başarıyla tamamlandı',
@@ -425,7 +425,7 @@ const THREAT_POLICIES_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 7,
+    id: 8,
     name: 'antispam_summary',
     title: 'Tamamlandı! ✅',
     description: 'Anti-Spam yapılandırması başarıyla tamamlandı',
@@ -567,7 +567,7 @@ const SAFE_LINKS_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 7,
+    id: 8,
     name: 'safelinks_step8_domain',
     title: 'Domain Ekle',
     description: 'Şirket domaininizi ekleyin',
@@ -588,7 +588,7 @@ const SAFE_LINKS_STEPS = [
     waitAfterClick: 500
   },
   {
-    id: 8,
+    id: 9,
     name: 'safelinks_step9_next2',
     title: 'Next (2)',
     description: 'Next butonuna tıklayın',
@@ -607,7 +607,7 @@ const SAFE_LINKS_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 9,
+    id: 10,
     name: 'safelinks_step10_deselect_options',
     title: 'Seçenekleri Kaldır',
     description: '"Track user clicks" ve "Office 365 Apps" seçeneklerini deselect edin',
@@ -626,7 +626,7 @@ const SAFE_LINKS_STEPS = [
     waitAfterClick: 500
   },
   {
-    id: 10,
+    id: 11,
     name: 'safelinks_step11_add_urls',
     title: 'Phishing Domain Ekle',
     description: 'Do not rewrite the following URLs kısmına *.domain.com/* formatında ekleyin',
@@ -648,7 +648,7 @@ const SAFE_LINKS_STEPS = [
     waitAfterClick: 500
   },
   {
-    id: 11,
+    id: 12,
     name: 'safelinks_step12_next3',
     title: 'Next (3)',
     description: 'Next butonuna tıklayın',
@@ -773,36 +773,12 @@ const SPAM_FILTER_BYPASS_STEPS = [
   },
   {
     id: 5,
-    name: 'spambypass_step5_create_rule',
-    title: 'Create A New Rule',
-    description: 'Açılan menüden "Create a new rule" seçeneğini seçin',
-    target: {
-      selector: 'span.ms-ContextualMenu-itemText.label-685',
-      textMatch: /Create a new rule/i,
-      fallback: [
-        'span.ms-ContextualMenu-itemText:contains("Create a new rule")',
-        'a:contains("Create a new rule")',
-        'div[role="menuitem"]:contains("Create a new rule")',
-        'button:contains("Create a new rule")',
-        'a:contains("new rule")'
-      ]
-    },
-    tooltip: '"Create a new rule" seçeneğini tıklayın',
-    autoClick: true,
-    validation: () => {
-      return document.location.href.includes('new') || document.querySelector('input[placeholder*="name"]')
-    },
-    waitAfterClick: 4000
-  },
-  {
-    id: 6,
-    name: 'spambypass_step6_rule_name',
+    name: 'spambypass_step5_rule_name',
     title: 'Kural İsmi',
-    description: 'Beyaz liste kuralı için bir isim girin: "Keepnet_Whitelist_AllEdges"',
+    description: 'Beyaz liste kuralı için bir isim girin (örn: "Keepnet_Whitelist_AllEdges")',
     target: {
-      selector: 'input[data-automation-id="EditTransportRule_Name_TextField"]',
+      selector: 'input[placeholder*="name"]',
       fallback: [
-        'input[placeholder*="name"]',
         'input[aria-label*="name"]',
         'input[aria-label*="Name"]',
         'input[type="text"]:first-of-type'
@@ -811,11 +787,35 @@ const SPAM_FILTER_BYPASS_STEPS = [
     tooltip: 'Kural adını girin',
     autoClick: false,
     validation: () => {
-      const input = document.querySelector('input[data-automation-id="EditTransportRule_Name_TextField"]')
+      const input = document.querySelector('input[placeholder*="name"]') || document.querySelector('input[aria-label*="name"]')
       return input && input.value && input.value.length > 0
     },
-    waitAfterClick: 1000,
-    criticalStep: true
+    realTimeValidation: true,
+    criticalStep: true,
+    waitAfterClick: 500
+  },
+  {
+    id: 6,
+    name: 'spambypass_step6_rule_name',
+    title: 'Kural İsmi',
+    description: 'Beyaz liste kuralı için bir isim girin (örn: "Whitelist Rule")',
+    target: {
+      selector: 'input[placeholder*="name"]',
+      fallback: [
+        'input[aria-label*="name"]',
+        'input[aria-label*="Name"]',
+        'input[type="text"]:first-of-type'
+      ]
+    },
+    tooltip: 'Kural adını girin',
+    autoClick: false,
+    validation: () => {
+      const input = document.querySelector('input[placeholder*="name"]') || document.querySelector('input[aria-label*="name"]')
+      return input && input.value && input.value.length > 0
+    },
+    realTimeValidation: true,
+    criticalStep: true,
+    waitAfterClick: 500
   },
   {
     id: 7,
@@ -823,95 +823,28 @@ const SPAM_FILTER_BYPASS_STEPS = [
     title: 'Apply This Rule If',
     description: '"Apply this rule if..." kısmını ayarlayın - The sender > IP address seçeneğini tıklayın',
     target: {
-      selector: 'span.ms-Dropdown-title',
-      textMatch: /Select one/i,
+      selector: 'button[aria-label*="Apply this rule"]',
+      textMatch: /Apply this rule if/i,
       fallback: [
-        'span[id*="Dropdown"][id*="option"]',
-        'button[aria-label*="Apply this rule"]',
         'button:contains("Apply this rule")',
         'button[aria-label*="condition"]'
       ]
     },
-    tooltip: '"Apply this rule if..." dropdown"ını tıklayın',
+    tooltip: '"Apply this rule if..." ayarlarını yapın',
     autoClick: false,
     validation: () => {
       return true
     },
-    waitAfterClick: 1000
+    waitAfterClick: 2000
   },
   {
     id: 8,
-    name: 'spambypass_step8_select_sender',
-    title: 'The Sender Seçeneği',
-    description: '"The sender" seçeneğini seçin',
+    name: 'spambypass_step8_sender_ip',
+    title: 'Gönderici IP Adresi',
+    description: 'The sender > IP address is seçeneğini ayarlayın ve IP adreslerini girin',
     target: {
-      selector: 'span.ms-Dropdown-optionText.dropdownOptionText-777',
-      textMatch: /The sender/i,
+      selector: 'input.ms-BasePicker-input',
       fallback: [
-        'span.ms-Dropdown-optionText:contains("The sender")',
-        'div[role="option"]:contains("The sender")',
-        'button:contains("The sender")'
-      ]
-    },
-    tooltip: '"The sender" seçeneğine tıklayın',
-    autoClick: false,
-    validation: () => {
-      return true
-    },
-    waitAfterClick: 1000
-  },
-  {
-    id: 9,
-    name: 'spambypass_step9_open_dropdown',
-    title: 'İkinci Dropdown Açılsın',
-    description: '"Select one" dropdown"ını açın',
-    target: {
-      selector: 'span.ms-Dropdown-titleIsPlaceHolder',
-      textMatch: /Select one/i,
-      fallback: [
-        'span[id*="Dropdown"][id*="option"]',
-        'span.ms-Dropdown-title.ms-Dropdown-titleIsPlaceHolder'
-      ]
-    },
-    tooltip: '"Select one" dropdown"ını tıklayın',
-    autoClick: false,
-    validation: () => {
-      return true
-    },
-    waitAfterClick: 1000
-  },
-  {
-    id: 10,
-    name: 'spambypass_step10_select_ip_range',
-    title: 'IP Address Condition',
-    description: '"IP address is in any of these ranges or exactly matches" seçeneğini seçin',
-    target: {
-      selector: 'span.ms-Dropdown-optionText:contains("IP address is in any of these ranges or exactly matches")',
-      textMatch: /IP address is in any of these ranges/i,
-      fallback: [
-        'span.ms-Dropdown-optionText.dropdownOptionText-777',
-        'span.ms-Dropdown-optionText:contains("IP address")',
-        'div[role="option"]:contains("IP address")',
-        'button:contains("IP address")'
-      ]
-    },
-    tooltip: 'IP address seçeneğine tıklayın',
-    autoClick: false,
-    validation: () => {
-      return true
-    },
-    waitAfterClick: 1000
-  },
-  {
-    id: 11,
-    name: 'spambypass_step11_enter_ip',
-    title: 'IP Adreslerini Gir',
-    description: 'IP adreslerini girin: 149.72.161.59, 149.72.42.201, 149.72.154.87',
-    target: {
-      selector: 'input[data-automation-id="SenderIpRanges_Input"]',
-      fallback: [
-        'input[placeholder*="IPv4 or IPv6"]',
-        'input.ms-BasePicker-input',
         'textarea.ms-TextField-field',
         'input[aria-label*="IP"]',
         'textarea'
@@ -920,7 +853,7 @@ const SPAM_FILTER_BYPASS_STEPS = [
     tooltip: 'IP adreslerini girin (Her satıra bir IP)',
     autoClick: false,
     validation: () => {
-      const input = document.querySelector('input[data-automation-id="SenderIpRanges_Input"]')
+      const input = document.querySelector('input.ms-BasePicker-input') || document.querySelector('textarea')
       return input && input.value && input.value.length > 0
     },
     realTimeValidation: true,
@@ -929,49 +862,8 @@ const SPAM_FILTER_BYPASS_STEPS = [
     isLabelStep: false
   },
   {
-    id: 12,
-    name: 'spambypass_step12_add_ip',
-    title: 'Add IP',
-    description: 'IP adresini eklemek için "Add" tuşuna basın',
-    target: {
-      selector: 'button[aria-label*="Add"]',
-      textMatch: /Add/i,
-      fallback: [
-        'span.ms-Button-label:contains("Add")',
-        'button:contains("Add")',
-        'button[data-automation-id*="Add"]'
-      ]
-    },
-    tooltip: '"Add" tuşuna tıklayın',
-    autoClick: true,
-    validation: () => {
-      return true
-    },
-    waitAfterClick: 1000
-  },
-  {
-    id: 13,
-    name: 'spambypass_step13_save_ip',
-    title: 'Save IP',
-    description: 'IP adresini kaydetmek için "Save" tuşuna basın',
-    target: {
-      selector: 'span.ms-Button-label:contains("Save")',
-      textMatch: /Save/i,
-      fallback: [
-        'button:contains("Save")',
-        'button[data-automation-id*="Save"]'
-      ]
-    },
-    tooltip: '"Save" tuşuna tıklayın',
-    autoClick: true,
-    validation: () => {
-      return true
-    },
-    waitAfterClick: 1500
-  },
-  {
-    id: 14,
-    name: 'spambypass_step14_do_following',
+    id: 9,
+    name: 'spambypass_step9_do_following',
     title: 'Do The Following',
     description: '"Do the following" kısmında Modify the message properties > Set SCL > -1 ve Bypass spam filtering seçeneğini ayarlayın',
     target: {
@@ -990,10 +882,10 @@ const SPAM_FILTER_BYPASS_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 15,
-    name: 'spambypass_step15_message_header',
+    id: 10,
+    name: 'spambypass_step10_message_header',
     title: 'Message Header Ayarı',
-    description: 'Modify the message properties > set a message header > X-MS-Exchange-Organization-BypassClutter = true seçeneğini ayarlayın',
+    description: 'Yeni kural: Modify the message properties > set a message header > X-MS-Exchange-Organization-BypassClutter = true',
     target: {
       selector: 'button[aria-label*="message header"]',
       textMatch: /message header|set a message/i,
@@ -1010,8 +902,8 @@ const SPAM_FILTER_BYPASS_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 16,
-    name: 'spambypass_step16_save_final',
+    id: 11,
+    name: 'spambypass_step11_save_final',
     title: 'Kaydet',
     description: 'Tüm ayarları kaydedip kuralı oluşturun',
     target: {
@@ -1027,10 +919,10 @@ const SPAM_FILTER_BYPASS_STEPS = [
     validation: () => {
       return true
     },
-    waitAfterClick: 3000
+    waitAfterClick: 2000
   },
   {
-    id: 17,
+    id: 12,
     name: 'spambypass_summary',
     title: 'Tamamlandı! ✅',
     description: 'Spam Filter Bypass kuralı başarıyla oluşturuldu.',
@@ -1187,7 +1079,7 @@ const ATP_LINK_BYPASS_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 7,
+    id: 8,
     name: 'atplink_summary',
     title: 'Tamamlandı! ✅',
     description: 'ATP Link Bypass (SkipSafeLinksProcessing) kuralı başarıyla oluşturuldu.',
@@ -1344,7 +1236,7 @@ const ATP_ATTACHMENT_BYPASS_STEPS = [
     waitAfterClick: 2000
   },
   {
-    id: 7,
+    id: 8,
     name: 'atpattach_summary',
     title: '🎊 Tebrikler! Tüm Adımları Tamamladınız!',
     description: 'ATP Attachment Bypass kuralı başarıyla oluşturuldu. Office 365 ortamında IP adreslerini beyaz listeye aldınız ve güvenlik simülasyonları, spam filtreleme ve tehdit öncesi (ATP) özelliklerini başarıyla yapılandırdınız!',

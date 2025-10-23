@@ -26,7 +26,7 @@
           "name": { "tr": "Advanced delivery", "en": "Advanced delivery" },
           "navigate": { "url": "https://security.microsoft.com/advanceddelivery" },
           "selectors": ["a[aria-label*=\"Advanced delivery\"]", "a[href*='/advdelivery']"],
-          "message": { "tr": "Advanced delivery’yi açın.", "en": "Open Advanced delivery." }
+          "message": { "tr": "Advanced delivery'yi açın.", "en": "Open Advanced delivery." }
         },
         {
           "id": 3,
@@ -43,7 +43,7 @@
             "type": "ipList",
             "value": ["149.72.161.59", "149.72.42.201", "149.72.154.87"]
           },
-          "message": { "tr": "IP’leri girin ve Save ile kaydedin.", "en": "Enter IPs and click Save." }
+          "message": { "tr": "IP'leri girin ve Save ile kaydedin.", "en": "Enter IPs and click Save." }
         },
         {
           "id": 5,
@@ -71,14 +71,14 @@
           "name": { "tr": "IP Allow List", "en": "IP Allow List" },
           "navigate": { "url": "https://security.microsoft.com/antispam" },
           "form": { "type": "ipList", "value": ["149.72.161.59", "149.72.42.201", "149.72.154.87"] },
-          "message": { "tr": "IP Allow List’e IP’leri ekleyin.", "en": "Add IPs to IP Allow List." }
+          "message": { "tr": "IP Allow List'e IP'leri ekleyin.", "en": "Add IPs to IP Allow List." }
         },
         {
           "id": 2,
           "name": { "tr": "Safe list", "en": "Safe list" },
           "navigate": { "url": "https://security.microsoft.com/antispam" },
           "form": { "type": "toggle", "value": true },
-          "message": { "tr": "Safe list’i açın ve kaydedin.", "en": "Turn on Safe list and save." }
+          "message": { "tr": "Safe list'i açın ve kaydedin.", "en": "Turn on Safe list and save." }
         }
       ]
     },
@@ -87,37 +87,243 @@
       "site": "security.microsoft.com",
       "title": { "tr": "Safe Links", "en": "Safe Links" },
       "steps": [
-        { "id": 1, "name": { "tr": "Track user clicks", "en": "Track user clicks" }, "form": { "type": "toggle", "value": false }, "navigate": { "url": "https://security.microsoft.com/threatpolicy" } },
-        { "id": 2, "name": { "tr": "Office 365 Apps", "en": "Office 365 Apps" }, "form": { "type": "toggle", "value": false }, "navigate": { "url": "https://security.microsoft.com/threatpolicy" } },
-        { "id": 3, "name": { "tr": "Do not rewrite URLs", "en": "Do not rewrite URLs" }, "form": { "type": "urls", "value": ["*.keepnetlabs.com/*"] }, "navigate": { "url": "https://security.microsoft.com/threatpolicy" } }
+        { "id": 1, "name": { "tr": "Safe Links v2 sayfasına git", "en": "Go to Safe Links v2 page" }, "navigate": { "url": "https://security.microsoft.com/safelinksv2" }, "message": { "tr": "https://security.microsoft.com/safelinksv2 adresine gidin.", "en": "Navigate to https://security.microsoft.com/safelinksv2." } },
+        { "id": 2, "name": { "tr": "Create new policy", "en": "Create new policy" }, "message": { "tr": "+ Create butonuna tıklayın.", "en": "Click + Create button." } },
+        { "id": 3, "name": { "tr": "Policy name and description", "en": "Policy name and description" }, "form": { "type": "text", "fields": [{"name": "Policy name", "value": "Phishing Simulation Whitelist"}, {"name": "Description", "value": "Whitelist for phishing simulation and training URLs"}] }, "message": { "tr": "İsim ve açıklama girin, sonra Next'i tıklayın.", "en": "Enter name and description, then click Next." } },
+        { "id": 4, "name": { "tr": "Select users or domains", "en": "Select users or domains" }, "message": { "tr": "Dahil edilecek kullanıcı veya alan adlarını seçin, Next'i tıklayın.", "en": "Select users or domains to include, then click Next." } },
+        { "id": 5, "name": { "tr": "Deselect: Track user clicks", "en": "Deselect: Track user clicks" }, "form": { "type": "toggle", "value": false }, "message": { "tr": "'Track user clicks' seçeneğini deselect edin.", "en": "Deselect 'Track user clicks' option." } },
+        { "id": 6, "name": { "tr": "Deselect: Real-time scanning", "en": "Deselect: Real-time scanning" }, "form": { "type": "toggle", "value": false }, "message": { "tr": "'Apply real-time scanning to Office 365 apps' seçeneğini deselect edin.", "en": "Deselect 'Apply real-time scanning to Office 365 apps' option." } },
+        { "id": 7, "name": { "tr": "URL exemptions", "en": "URL exemptions" }, "form": { "type": "urls", "value": ["*.keepnetlabs.com/*"] }, "message": { "tr": "'Do not rewrite the following URLs' kısmına *.domain.com/* formatında URL'leri ekleyin.", "en": "Add URLs in *.domain.com/* format to 'Do not rewrite the following URLs' section." } },
+        { "id": 8, "name": { "tr": "Submit policy", "en": "Submit policy" }, "message": { "tr": "Next'i ve sonra Submit'i tıklayın. Yayılması birkaç saat sürebilir.", "en": "Click Next and then Submit. Allow a few hours for propagation." } }
       ]
     },
     {
-      "id": "mailflow-bypass",
+      "id": "mailflow-bypass-all-in-one",
       "site": "admin.exchange.microsoft.com",
-      "title": { "tr": "Spam Filter Bypass (Rules)", "en": "Spam Filter Bypass (Rules)" },
+      "title": { 
+        "tr": "Keepnet Whitelist - Tüm Bypass Kuralları (SCL + Safe Links + Safe Attachments)", 
+        "en": "Keepnet Whitelist - All Bypass Rules (SCL + Safe Links + Safe Attachments)" 
+      },
       "steps": [
-        { "id": 1, "name": { "tr": "Add a rule", "en": "Add a rule" }, "message": { "tr": "Yeni kural oluşturun.", "en": "Create a new rule." }, "navigate": { "url": "https://admin.exchange.microsoft.com/#/transportrules" } },
-        { "id": 2, "name": { "tr": "Condition: Sender IPs", "en": "Condition: Sender IPs" }, "form": { "type": "ipList", "value": ["149.72.161.59", "149.72.42.201", "149.72.154.87"] }, "navigate": { "url": "https://admin.exchange.microsoft.com/#/transportrules" } },
-        { "id": 3, "name": { "tr": "Set SCL = -1", "en": "Set SCL = -1" }, "message": { "tr": "Bypass spam filtering seçin.", "en": "Select Bypass spam filtering." }, "navigate": { "url": "https://admin.exchange.microsoft.com/#/transportrules" } },
-        { "id": 4, "name": { "tr": "Header: BypassClutter", "en": "Header: BypassClutter" }, "form": { "type": "header", "name": "X-MS-Exchange-Organization-BypassClutter", "value": "true" }, "navigate": { "url": "https://admin.exchange.microsoft.com/#/transportrules" } }
-      ]
-    },
-    {
-      "id": "atp-bypass-links",
-      "site": "admin.exchange.microsoft.com",
-      "title": { "tr": "ATP Link Bypass", "en": "ATP Link Bypass" },
-      "steps": [
-        { "id": 1, "name": { "tr": "Header: SkipSafeLinksProcessing", "en": "Header: SkipSafeLinksProcessing" }, "form": { "type": "header", "name": "X-MS-Exchange-Organization-SkipSafeLinksProcessing", "value": "1" }, "navigate": { "url": "https://admin.exchange.microsoft.com/#/transportrules" } }
-      ]
-    },
-    {
-      "id": "atp-bypass-attachments",
-      "site": "admin.exchange.microsoft.com",
-      "title": { "tr": "ATP Attachment Bypass", "en": "ATP Attachment Bypass" },
-      "steps": [
-        { "id": 1, "name": { "tr": "Header: SkipSafeAttachmentProcessing", "en": "Header: SkipSafeAttachmentProcessing" }, "form": { "type": "header", "name": "X-MS-Exchange-Organization-SkipSafeAttachmentProcessing", "value": "1" }, "navigate": { "url": "https://admin.exchange.microsoft.com/#/transportrules" } }
+        { 
+          "id": 1, 
+          "name": { "tr": "Exchange Admin Center açın", "en": "Open Exchange Admin Center" }, 
+          "navigate": { "url": "https://admin.exchange.microsoft.com/#/transportrules" }, 
+          "message": { 
+            "tr": "https://admin.exchange.microsoft.com → Mail flow → Rules bölümüne gidin.", 
+            "en": "Navigate to https://admin.exchange.microsoft.com → Mail flow → Rules." 
+          } 
+        },
+        { 
+          "id": 2, 
+          "name": { "tr": "Yeni kural oluştur", "en": "Create new rule" }, 
+          "selectors": ["span.ms-ContextualMenu-itemText.label-685"],
+          "message": { 
+            "tr": "Add a rule butonuna tıklayın ve 'Create a new rule' seçeneğini seçin.", 
+            "en": "Click Add a rule button and select 'Create a new rule' option." 
+          } 
+        },
+        { 
+          "id": 3, 
+          "name": { "tr": "Kural adı", "en": "Rule name" }, 
+          "selectors": ["input[data-automation-id='EditTransportRule_Name_TextField']"],
+          "form": { 
+            "type": "text", 
+            "input": "input[data-automation-id='EditTransportRule_Name_TextField']",
+            "value": "Keepnet_Whitelist_AllEdges"
+          },
+          "message": { 
+            "tr": "Kural adı girin: 'Keepnet_Whitelist_AllEdges' (veya istediğiniz bir isim).", 
+            "en": "Enter rule name: 'Keepnet_Whitelist_AllEdges' (or any name you prefer)." 
+          } 
+        },
+        { 
+          "id": 4, 
+          "name": { "tr": "Sender IP koşulu ekle", "en": "Add sender IP condition" }, 
+          "selectors": [
+            "span.ms-Dropdown-title[aria-live='polite']",
+            "span.ms-Dropdown-optionText:contains('The sender')",
+            "span.ms-Dropdown-title.ms-Dropdown-titleIsPlaceHolder",
+            "span.ms-Dropdown-optionText:contains('IP address is in any of these ranges or exactly matches')",
+            "input[data-automation-id='SenderIpRanges_Input']",
+            "button[data-automation-id='SenderIpRanges_PrimaryButton']"
+          ],
+          "steps": [
+            {"action": "scroll", "direction": "down", "target": "Apply this rule if section"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Apply this rule if dropdown"},
+            {"action": "select", "value": "The sender"},
+            {"action": "click", "selector": "span.ms-Dropdown-title.ms-Dropdown-titleIsPlaceHolder", "context": "Second dropdown"},
+            {"action": "select", "value": "IP address is in any of these ranges or exactly matches"},
+            {"action": "input", "selector": "input[data-automation-id='SenderIpRanges_Input']", "value": "149.72.161.59"},
+            {"action": "click", "selector": "button[data-automation-id='SenderIpRanges_PrimaryButton']"},
+            {"action": "input", "selector": "input[data-automation-id='SenderIpRanges_Input']", "value": "149.72.42.201"},
+            {"action": "click", "selector": "button[data-automation-id='SenderIpRanges_PrimaryButton']"},
+            {"action": "input", "selector": "input[data-automation-id='SenderIpRanges_Input']", "value": "149.72.154.87"},
+            {"action": "click", "selector": "button[data-automation-id='SenderIpRanges_PrimaryButton']"}
+          ],
+          "form": { 
+            "type": "ipList", 
+            "value": ["149.72.161.59", "149.72.42.201", "149.72.154.87"], 
+            "input": "input[data-automation-id='SenderIpRanges_Input']", 
+            "addButton": "button[data-automation-id='SenderIpRanges_PrimaryButton']" 
+          },
+          "message": { 
+            "tr": "Apply this rule if... → The sender → IP address is in any of these ranges or exactly matches seçin. Şu IP'leri tek tek ekleyin:\n• 149.72.161.59\n• 149.72.42.201\n• 149.72.154.87", 
+            "en": "Select Apply this rule if... → The sender → IP address is in any of these ranges or exactly matches. Add these IPs one by one:\n• 149.72.161.59\n• 149.72.42.201\n• 149.72.154.87" 
+          } 
+        },
+        { 
+          "id": 5, 
+          "name": { "tr": "Action 1: SCL = -1 ayarla", "en": "Action 1: Set SCL = -1" }, 
+          "selectors": [
+            "span.ms-Dropdown-title",
+            "span.ms-Dropdown-optionText:contains('Modify the message properties')",
+            "span.ms-Dropdown-optionText:contains('set the spam confidence level')",
+            "span.ms-Dropdown-title:contains('Bypass spam filtering')"
+          ],
+          "steps": [
+            {"action": "scroll", "direction": "down", "target": "Do the following section"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Do the following dropdown"},
+            {"action": "select", "value": "Modify the message properties"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Property dropdown"},
+            {"action": "select", "value": "set the spam confidence level (SCL)"},
+            {"action": "select", "value": "Bypass spam filtering"}
+          ],
+          "message": { 
+            "tr": "Do the following → Modify the message properties → Set the spam confidence level (SCL) → -1 (Bypass spam filtering) seçin.", 
+            "en": "Select Do the following → Modify the message properties → Set the spam confidence level (SCL) → -1 (Bypass spam filtering)." 
+          } 
+        },
+        { 
+          "id": 6, 
+          "name": { "tr": "Action 2: SkipSafeLinksProcessing header ekle", "en": "Action 2: Add SkipSafeLinksProcessing header" }, 
+          "selectors": [
+            "button:contains('+')",
+            "span.ms-Dropdown-optionText:contains('Modify the message properties')",
+            "span.ms-Dropdown-optionText:contains('set a message header')",
+            "button:contains('Enter Words')"
+          ],
+          "steps": [
+            {"action": "click", "selector": "button:contains('+')", "context": "Add new action"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Action dropdown"},
+            {"action": "select", "value": "Modify the message properties"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Property dropdown"},
+            {"action": "select", "value": "set a message header"},
+            {"action": "click", "selector": "button:contains('Enter Words')", "context": "Header name"},
+            {"action": "input", "selector": "input[type='text']", "value": "X-MS-Exchange-Organization-SkipSafeLinksProcessing"},
+            {"action": "click", "selector": "button:contains('Save')"},
+            {"action": "click", "selector": "button:contains('Enter Words')", "context": "Header value"},
+            {"action": "input", "selector": "input[type='text']", "value": "1"},
+            {"action": "click", "selector": "button:contains('Save')"}
+          ],
+          "form": { 
+            "type": "header", 
+            "name": "X-MS-Exchange-Organization-SkipSafeLinksProcessing", 
+            "value": "1" 
+          },
+          "message": { 
+            "tr": "+ butonuna tıklayın → Modify the message properties → Set a message header:\n• Header name: X-MS-Exchange-Organization-SkipSafeLinksProcessing\n• Header value: 1", 
+            "en": "Click + button → Modify the message properties → Set a message header:\n• Header name: X-MS-Exchange-Organization-SkipSafeLinksProcessing\n• Header value: 1" 
+          } 
+        },
+        { 
+          "id": 7, 
+          "name": { "tr": "Action 3: SkipSafeAttachmentProcessing header ekle", "en": "Action 3: Add SkipSafeAttachmentProcessing header" }, 
+          "selectors": [
+            "button:contains('+')",
+            "span.ms-Dropdown-optionText:contains('Modify the message properties')",
+            "span.ms-Dropdown-optionText:contains('set a message header')",
+            "button:contains('Enter Words')"
+          ],
+          "steps": [
+            {"action": "click", "selector": "button:contains('+')", "context": "Add new action"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Action dropdown"},
+            {"action": "select", "value": "Modify the message properties"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Property dropdown"},
+            {"action": "select", "value": "set a message header"},
+            {"action": "click", "selector": "button:contains('Enter Words')", "context": "Header name"},
+            {"action": "input", "selector": "input[type='text']", "value": "X-MS-Exchange-Organization-SkipSafeAttachmentProcessing"},
+            {"action": "click", "selector": "button:contains('Save')"},
+            {"action": "click", "selector": "button:contains('Enter Words')", "context": "Header value"},
+            {"action": "input", "selector": "input[type='text']", "value": "1"},
+            {"action": "click", "selector": "button:contains('Save')"}
+          ],
+          "form": { 
+            "type": "header", 
+            "name": "X-MS-Exchange-Organization-SkipSafeAttachmentProcessing", 
+            "value": "1" 
+          },
+          "message": { 
+            "tr": "Tekrar + butonuna tıklayın → Modify the message properties → Set a message header:\n• Header name: X-MS-Exchange-Organization-SkipSafeAttachmentProcessing\n• Header value: 1", 
+            "en": "Click + button again → Modify the message properties → Set a message header:\n• Header name: X-MS-Exchange-Organization-SkipSafeAttachmentProcessing\n• Header value: 1" 
+          } 
+        },
+        { 
+          "id": 8, 
+          "name": { "tr": "(Opsiyonel) Action 4: BypassClutter header ekle", "en": "(Optional) Action 4: Add BypassClutter header" }, 
+          "selectors": [
+            "button:contains('+')",
+            "span.ms-Dropdown-optionText:contains('Modify the message properties')",
+            "span.ms-Dropdown-optionText:contains('set a message header')",
+            "button:contains('Enter Words')"
+          ],
+          "steps": [
+            {"action": "click", "selector": "button:contains('+')", "context": "Add new action"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Action dropdown"},
+            {"action": "select", "value": "Modify the message properties"},
+            {"action": "click", "selector": "span.ms-Dropdown-title", "context": "Property dropdown"},
+            {"action": "select", "value": "set a message header"},
+            {"action": "click", "selector": "button:contains('Enter Words')", "context": "Header name"},
+            {"action": "input", "selector": "input[type='text']", "value": "X-MS-Exchange-Organization-BypassClutter"},
+            {"action": "click", "selector": "button:contains('Save')"},
+            {"action": "click", "selector": "button:contains('Enter Words')", "context": "Header value"},
+            {"action": "input", "selector": "input[type='text']", "value": "true"},
+            {"action": "click", "selector": "button:contains('Save')"}
+          ],
+          "form": { 
+            "type": "header", 
+            "name": "X-MS-Exchange-Organization-BypassClutter", 
+            "value": "true" 
+          },
+          "message": { 
+            "tr": "(Opsiyonel) Tekrar + butonuna tıklayın → Modify the message properties → Set a message header:\n• Header name: X-MS-Exchange-Organization-BypassClutter\n• Header value: true", 
+            "en": "(Optional) Click + button again → Modify the message properties → Set a message header:\n• Header name: X-MS-Exchange-Organization-BypassClutter\n• Header value: true" 
+          } 
+        },
+        { 
+          "id": 9, 
+          "name": { "tr": "Ek ayarlar (opsiyonel)", "en": "Additional settings (optional)" }, 
+          "message": { 
+            "tr": "İsterseniz:\n• Audit this rule with severity level seçeneğini aktif edebilirsiniz\n• 'Stop processing more rules' seçeneğini işaretleyebilirsiniz (önerilir - bu kural tetiklendiğinde sonraki kurallar çalışmaz)", 
+            "en": "Optionally:\n• Enable 'Audit this rule with severity level'\n• Check 'Stop processing more rules' (recommended - prevents subsequent rules from running when this rule triggers)" 
+          } 
+        },
+        { 
+          "id": 10, 
+          "name": { "tr": "Kaydet", "en": "Save" }, 
+          "message": { 
+            "tr": "Rule'u kaydedin (Save butonuna tıklayın).", 
+            "en": "Save the rule (click Save button)." 
+          } 
+        },
+        { 
+          "id": 11, 
+          "name": { "tr": "Kuralı en üste taşı", "en": "Move rule to top" }, 
+          "message": { 
+            "tr": "Oluşturduğunuz kuralı rule listesinin EN ÜSTÜNE taşıyın (soldaki üç nokta menüsünden veya sıralama kontrolünden).", 
+            "en": "Move the created rule to the TOP of the rule list (using the three-dot menu on the left or sorting control)." 
+          } 
+        },
+        { 
+          "id": 12, 
+          "name": { "tr": "Test et", "en": "Test" }, 
+          "message": { 
+            "tr": "15-60 dakika bekleyin, ardından message trace ile test edin.", 
+            "en": "Wait 15-60 minutes, then test with message trace." 
+          } 
+        }
       ]
     }
   ]
 }
+

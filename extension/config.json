@@ -317,282 +317,228 @@
           }
         ]
       },
-      {
-        "id": "spam_filter_bypass",
-        "site": "admin.exchange.microsoft.com",
-        "name": "Mail Flow Rules - Spam Filter Bypass",
-        "description": "PDF Sayfa 7-8: Bypass spam filtering (SCL = -1)",
-        "steps": [
-          {
-            "id": 23,
-            "title": "Exchange Admin Portal",
-            "description": "Exchange Admin Portal'a giriş yapın",
-            "navigate": {
-              "url": "https://admin.exchange.microsoft.com/#/transportrules"
+        {
+          "id": "mailflow_bypass_all_in_one",
+          "site": "https://admin.exchange.microsoft.com",
+          "name": "Mail Flow Rules - All Bypass Rules (SCL + Safe Links + Safe Attachments)",
+          "description": "Tüm bypass kurallarını tek bir Mail Flow Rule içinde birleştir",
+          "steps": [
+            {
+              "id": 23,
+              "title": "Exchange Admin Portal",
+              "description": "Exchange Admin Portal'a giriş yapın",
+              "navigate": {
+                "url": "https://admin.exchange.microsoft.com/#/transportrules"
+              },
+              "pdfReference": "Sayfa 8, Step 1-2"
             },
-            "pdfReference": "Sayfa 8, Step 1-2"
-          },
-          {
-            "id": 24,
-            "title": "Add Rule - Bypass Spam Filter",
-            "description": "'+ Add a rule' → 'Bypass Spam Filter' seçin",
-            "selectors": [
-              "button:has-text('Add a rule')",
-              "button[aria-label*='Add']",
-              "a:has-text('Bypass spam')"
-            ],
-            "pdfReference": "Sayfa 8, Step 2-3"
-          },
-          {
-            "id": 25,
-            "title": "Kural Adı",
-            "description": "White list kuralı için bir ad girin (örn: 'Keepnet IP Whitelist')",
-            "selectors": [
-              "input[aria-label*='Name']"
-            ],
-            "pdfReference": "Sayfa 8, Step 4"
-          },
-          {
-            "id": 26,
-            "title": "Sender IP Condition",
-            "description": "'Apply this rule if...' → 'The sender' → 'IP address is in any of these ranges or exactly matches' seçin",
-            "pdfReference": "Sayfa 8, Step 5"
-          },
-          {
-            "id": 27,
-            "title": "IP Adresleri Girme",
-            "description": "'Enter Words' tıklayıp Keepnet IP'lerini ekleyin: 149.72.161.59, 149.72.42.201, 149.72.154.87",
-            "validate": "mail_flow_sender_ips",
-            "required": ["meta.critical.ips"],
-            "realTimeValidation": true,
-            "expectedValues": ["149.72.161.59", "149.72.42.201", "149.72.154.87"],
-            "pdfReference": "Sayfa 8, Step 5a"
-          },
-          {
-            "id": 28,
-            "title": "SCL = -1 (Bypass Spam)",
-            "description": "'Do the following' → 'Modify message properties' → 'Set SCL' → '-1' → 'Bypass spam filtering'",
-            "validate": "scl_minus_one",
-            "selectors": [
-              "select[aria-label*='spam confidence level']",
-              "option[value='-1']"
-            ],
-            "pdfReference": "Sayfa 8, Step 6",
-            "criticalCheck": true
-          },
-          {
-            "id": 29,
-            "title": "Bypass Clutter Header",
-            "description": "'+ button' → 'set a message header' → 'X-MS-Exchange-Organization-BypassClutter' = 'true'",
-            "validate": "bypass_clutter_header",
-            "pdfReference": "Sayfa 8, Step 7",
-            "criticalCheck": true
-          },
-          {
-            "id": 30,
-            "title": "Kaydet ve Etkinleştir",
-            "description": "'Save' ile kaydedin ve kuralın 'Enabled' olduğundan emin olun",
-            "selectors": [
-              "button:has-text('Save')"
-            ],
-            "pdfReference": "Sayfa 8, Step 8-9",
-            "captureScreenshot": true
-          }
-        ]
-      },
-      {
-        "id": "skip_safe_links",
-        "site": "admin.exchange.microsoft.com",
-        "name": "Bypass ATP Safe Links Processing",
-        "description": "PDF Sayfa 8-9: X-MS-Exchange-Organization-SkipSafeLinksProcessing",
-        "steps": [
-          {
-            "id": 31,
-            "title": "Yeni Kural Oluştur",
-            "description": "'+ Add a rule' → 'Create a new rule'",
-            "navigate": {
-              "url": "https://admin.exchange.microsoft.com/#/transportrules"
+            {
+              "id": 24,
+              "title": "Yeni Kural Oluştur",
+              "description": "'+ Add a rule' butonuna tıkla ve açılan menüden 'Create a new rule' seçeneğini seç",
+              "selectors": [
+                "button:has-text('Add a rule')",
+                "button[aria-label*='Add']",
+                "a:has-text('Create a new rule')",
+                "div[role='menuitem']:has-text('Create a new rule')"
+              ],
+              "pdfReference": "Sayfa 8, Step 2-3"
             },
-            "pdfReference": "Sayfa 9, Step 1-3"
-          },
-          {
-            "id": 32,
-            "title": "Kural Adı",
-            "description": "Kural adı: 'Keepnet Skip Safe Links Processing'",
-            "pdfReference": "Sayfa 9, Step 4"
-          },
-          {
-            "id": 33,
-            "title": "Sender IP Condition",
-            "description": "'Apply this rule if...' → 'The sender' → 'IP address is in any of these ranges' → Keepnet IP'leri ekleyin",
-            "validate": "skip_links_sender_ips",
-            "required": ["meta.critical.ips"],
-            "pdfReference": "Sayfa 9, Step 5"
-          },
-          {
-            "id": 34,
-            "title": "SkipSafeLinksProcessing Header",
-            "description": "'Set a message header' → 'X-MS-Exchange-Organization-SkipSafeLinksProcessing' = '1'",
-            "validate": "skip_safe_links_header",
-            "pdfReference": "Sayfa 9, Step 6",
-            "criticalCheck": true
-          },
-          {
-            "id": 35,
-            "title": "Kaydet ve Etkinleştir",
-            "description": "'Save' ile kaydedin ve kuralın 'Enabled' olduğundan emin olun",
-            "pdfReference": "Sayfa 9, Step 7-8",
-            "captureScreenshot": true
-          }
-        ]
-      },
-      {
-        "id": "skip_safe_attachments",
-        "site": "admin.exchange.microsoft.com",
-        "name": "Bypass ATP Safe Attachments Processing",
-        "description": "PDF Sayfa 10-11: X-MS-Exchange-Organization-SkipSafeAttachmentProcessing",
-        "steps": [
-          {
-            "id": 36,
-            "title": "Yeni Kural Oluştur",
-            "description": "'+ Add a rule' → 'Create a new rule'",
-            "navigate": {
-              "url": "https://admin.exchange.microsoft.com/#/transportrules"
+            {
+              "id": 25,
+              "title": "Kural Adı",
+              "description": "Whitelist kuralı için ad girin: 'Keepnet_Whitelist_AllEdges'",
+              "selectors": [
+                "input[aria-label*='Name']",
+                "input[name='name']"
+              ],
+              "pdfReference": "Sayfa 8, Step 4"
             },
-            "pdfReference": "Sayfa 11, Step 1-3"
-          },
-          {
-            "id": 37,
-            "title": "Kural Adı",
-            "description": "Kural adı: 'Keepnet Skip Safe Attachments Processing'",
-            "pdfReference": "Sayfa 11, Step 4"
-          },
-          {
-            "id": 38,
-            "title": "Sender IP Condition",
-            "description": "'Apply this rule if...' → 'The sender' → 'IP address is in any of these ranges' → Keepnet IP'leri ekleyin",
-            "validate": "skip_attachments_sender_ips",
-            "required": ["meta.critical.ips"],
-            "pdfReference": "Sayfa 11, Step 5"
-          },
-          {
-            "id": 39,
-            "title": "SkipSafeAttachmentProcessing Header",
-            "description": "'Set a message header' → 'X-MS-Exchange-Organization-SkipSafeAttachmentProcessing' = '1'",
-            "validate": "skip_safe_attachments_header",
-            "pdfReference": "Sayfa 11, Step 6",
-            "criticalCheck": true
-          },
-          {
-            "id": 40,
-            "title": "Kaydet ve Etkinleştir",
-            "description": "'Save' ile kaydedin ve kuralın 'Enabled' olduğundan emin olun",
-            "pdfReference": "Sayfa 11, Step 7-8",
-            "captureScreenshot": true
-          }
-        ]
-      },
-      {
-        "id": "troubleshooting",
-        "site": "admin.exchange.microsoft.com",
-        "name": "Troubleshooting - Message Trace",
-        "description": "PDF Sayfa 11-12: E-posta teslim sorunlarını çözme",
-        "steps": [
-          {
-            "id": 41,
-            "title": "Message Trace",
-            "description": "'Exchange' → 'Mail flow' → 'Message Trace' → '+ start a trace'",
-            "navigate": {
-              "url": "https://admin.exchange.microsoft.com/#/messagetrace"
+            {
+              "id": 26,
+              "title": "Sender IP Condition",
+              "description": "'Apply this rule if...' → 'The sender' → 'IP address is in any of these ranges or exactly matches' seçin",
+              "pdfReference": "Sayfa 8, Step 5"
             },
-            "pdfReference": "Sayfa 12, Step 2"
+            {
+              "id": 27,
+              "title": "IP Adresleri Girme",
+              "description": "Keepnet IP'lerini ekleyin: 149.72.161.59, 149.72.42.201, 149.72.154.87",
+              "validate": "mail_flow_sender_ips",
+              "required": ["meta.critical.ips"],
+              "realTimeValidation": true,
+              "expectedValues": ["149.72.161.59", "149.72.42.201", "149.72.154.87"],
+              "pdfReference": "Sayfa 8, Step 5a"
+            },
+            {
+              "id": 28,
+              "title": "Action 1: SCL = -1 (Bypass Spam)",
+              "description": "'Do the following' → 'Modify message properties' → 'Set the spam confidence level (SCL)' → '-1' → 'Bypass spam filtering'",
+              "validate": "scl_minus_one",
+              "selectors": [
+                "select[aria-label*='spam confidence level']",
+                "option[value='-1']"
+              ],
+              "pdfReference": "Sayfa 8, Step 6",
+              "criticalCheck": true
+            },
+            {
+              "id": 29,
+              "title": "Action 2: SkipSafeLinksProcessing Header",
+              "description": "'+ button' → 'set a message header' → 'X-MS-Exchange-Organization-SkipSafeLinksProcessing' = '1'",
+              "validate": "skip_safe_links_header",
+              "pdfReference": "Sayfa 9, Step 6",
+              "criticalCheck": true
+            },
+            {
+              "id": 30,
+              "title": "Action 3: SkipSafeAttachmentProcessing Header",
+              "description": "'+ button' → 'set a message header' → 'X-MS-Exchange-Organization-SkipSafeAttachmentProcessing' = '1'",
+              "validate": "skip_safe_attachments_header",
+              "pdfReference": "Sayfa 11, Step 6",
+              "criticalCheck": true
+            },
+            {
+              "id": 31,
+              "title": "Action 4: BypassClutter Header (Optional)",
+              "description": "(Opsiyonel) '+ button' → 'set a message header' → 'X-MS-Exchange-Organization-BypassClutter' = 'true'",
+              "validate": "bypass_clutter_header",
+              "pdfReference": "Sayfa 8, Step 7"
+            },
+            {
+              "id": 32,
+              "title": "Ek Ayarlar (Optional)",
+              "description": "İsterseniz 'Stop processing more rules' seçeneğini işaretleyin",
+              "pdfReference": "Sayfa 8"
+            },
+            {
+              "id": 33,
+              "title": "Kaydet ve Etkinleştir",
+              "description": "'Save' ile kaydedin ve kuralın 'Enabled' olduğundan emin olun",
+              "selectors": [
+                "button:has-text('Save')"
+              ],
+              "pdfReference": "Sayfa 8-11, Step 8-9",
+              "captureScreenshot": true
+            },
+            {
+              "id": 34,
+              "title": "Kuralı Sıralama",
+              "description": "Oluşturduğunuz kuralı rule listesinin EN ÜSTÜNE taşıyın",
+              "pdfReference": "Sayfa 8"
+            },
+            {
+              "id": 35,
+              "title": "Test Et",
+              "description": "15-60 dakika bekleyin, ardından message trace ile test edin",
+              "navigate": {
+                "url": "https://admin.exchange.microsoft.com/#/messagetrace"
+              },
+              "pdfReference": "Sayfa 12"
+            }
+          ]
+        },
+        {
+          "id": "troubleshooting",
+          "site": "admin.exchange.microsoft.com",
+          "name": "Troubleshooting - Message Trace",
+          "description": "PDF Sayfa 11-12: E-posta teslim sorunlarını çözme",
+          "steps": [
+            {
+              "id": 36,
+              "title": "Message Trace",
+              "description": "'Exchange' → 'Mail flow' → 'Message Trace' → '+ start a trace'",
+              "navigate": {
+                "url": "https://admin.exchange.microsoft.com/#/messagetrace"
+              },
+              "pdfReference": "Sayfa 12, Step 2"
+            },
+            {
+              "id": 37,
+              "title": "Gönderen Adresi Arama",
+              "description": "'Senders' alanına Keepnet gönderen adresini girin ve 'Search'",
+              "validate": "message_trace_search",
+              "pdfReference": "Sayfa 12, Step 3-4"
+            },
+            {
+              "id": 38,
+              "title": "E-posta Detayları",
+              "description": "Teslim edilen e-postaları listeleyin ve detayları kontrol edin",
+              "validate": "message_trace_delivered",
+              "pdfReference": "Sayfa 12, Step 4-5",
+              "captureScreenshot": true
+            }
+          ]
+        }
+      ],
+      "validations": {
+        "sending_ip": {
+          "type": "ip_list",
+          "required": ["149.72.161.59", "149.72.42.201", "149.72.154.87"],
+          "message": {
+            "tr": "Keepnet IP adreslerini ekleyin",
+            "en": "Add Keepnet IP addresses"
           },
-          {
-            "id": 42,
-            "title": "Gönderen Adresi Arama",
-            "description": "'Senders' alanına Keepnet gönderen adresini girin ve 'Search'",
-            "validate": "message_trace_search",
-            "pdfReference": "Sayfa 12, Step 3-4"
+          "pdfReference": "Sayfa 1-2, 5"
+        },
+        "simulation_urls_wildcard": {
+          "type": "wildcard_domains",
+          "required": ["*.keepnetlabs.com/*", "*.simulation.keepnetlabs.com/*"],
+          "format": "*.domain.com/*",
+          "message": {
+            "tr": "Wildcard domain ekleyin (*.domain.com/*)",
+            "en": "Add wildcard domain (*.domain.com/*)"
           },
-          {
-            "id": 43,
-            "title": "E-posta Detayları",
-            "description": "Teslim edilen e-postaları listeleyin ve detayları kontrol edin",
-            "validate": "message_trace_delivered",
-            "pdfReference": "Sayfa 12, Step 4-5",
-            "captureScreenshot": true
+          "pdfReference": "Sayfa 5, Step 8"
+        },
+        "safe_links": {
+          "type": "safe_links_config",
+          "checks": [
+            "track_clicks_off",
+            "office365_apps_off",
+            "exception_domain"
+          ],
+          "message": {
+            "tr": "Safe Links yapılandırmasını tamamlayın",
+            "en": "Complete Safe Links configuration"
+          },
+          "pdfReference": "Sayfa 6-7"
+        },
+        "connection_filter": {
+          "type": "connection_filter_config",
+          "checks": [
+            "ip_allow_list",
+            "safe_list_enabled"
+          ],
+          "message": {
+            "tr": "Connection Filter ayarlarını yapın",
+            "en": "Configure Connection Filter settings"
+          },
+          "pdfReference": "Sayfa 5-6"
+        },
+        "mail_flow_rules": {
+          "type": "mail_flow_rules_config",
+          "description": "Tek bir mail flow rule'ü ile tüm bypass'ları kontrol et",
+          "requiredRules": [
+            {
+              "name": "Keepnet_Whitelist_AllEdges",
+              "actions": [
+                "SCL = -1",
+                "X-MS-Exchange-Organization-SkipSafeLinksProcessing = 1",
+                "X-MS-Exchange-Organization-SkipSafeAttachmentProcessing = 1",
+                "X-MS-Exchange-Organization-BypassClutter = true (optional)"
+              ],
+              "pdfReference": "Sayfa 8-11"
+            }
+          ],
+          "message": {
+            "tr": "Tek mail flow kuralı ile tüm bypass'ları yapılandır",
+            "en": "Configure all bypass rules in a single mail flow rule"
           }
-        ]
-      }
-    ],
-    "validations": {
-      "sending_ip": {
-        "type": "ip_list",
-        "required": ["149.72.161.59", "149.72.42.201", "149.72.154.87"],
-        "message": {
-          "tr": "Keepnet IP adreslerini ekleyin",
-          "en": "Add Keepnet IP addresses"
-        },
-        "pdfReference": "Sayfa 1-2, 5"
-      },
-      "simulation_urls_wildcard": {
-        "type": "wildcard_domains",
-        "required": ["*.keepnetlabs.com/*", "*.simulation.keepnetlabs.com/*"],
-        "format": "*.domain.com/*",
-        "message": {
-          "tr": "Wildcard domain ekleyin (*.domain.com/*)",
-          "en": "Add wildcard domain (*.domain.com/*)"
-        },
-        "pdfReference": "Sayfa 5, Step 8"
-      },
-      "safe_links": {
-        "type": "safe_links_config",
-        "checks": [
-          "track_clicks_off",
-          "office365_apps_off",
-          "exception_domain"
-        ],
-        "message": {
-          "tr": "Safe Links yapılandırmasını tamamlayın",
-          "en": "Complete Safe Links configuration"
-        },
-        "pdfReference": "Sayfa 6-7"
-      },
-      "connection_filter": {
-        "type": "connection_filter_config",
-        "checks": [
-          "ip_allow_list",
-          "safe_list_enabled"
-        ],
-        "message": {
-          "tr": "Connection Filter ayarlarını yapın",
-          "en": "Configure Connection Filter settings"
-        },
-        "pdfReference": "Sayfa 5-6"
-      },
-      "mail_flow_rules": {
-        "type": "mail_flow_rules_config",
-        "requiredRules": [
-          {
-            "name": "Bypass Spam Filter",
-            "header": "SCL = -1",
-            "pdfReference": "Sayfa 7-8"
-          },
-          {
-            "name": "Skip Safe Links Processing",
-            "header": "X-MS-Exchange-Organization-SkipSafeLinksProcessing = 1",
-            "pdfReference": "Sayfa 8-9"
-          },
-          {
-            "name": "Skip Safe Attachments Processing",
-            "header": "X-MS-Exchange-Organization-SkipSafeAttachmentProcessing = 1",
-            "pdfReference": "Sayfa 10-11"
-          }
-        ],
-        "message": {
-          "tr": "3 mail flow kuralı oluşturun",
-          "en": "Create 3 mail flow rules"
         }
       }
     }
-  }
+      
+  
+  
+
